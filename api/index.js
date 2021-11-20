@@ -6,9 +6,10 @@ app.use(express.json())
 
 // routes
 const firmRoutes = require('./routes/firm')
+const peopleRoutes = require('./routes/people')
 
-app.get('/', (req, res) => res.status(200).json({ ok: "ok" }))
 app.use(firmRoutes)
+app.use(peopleRoutes)
 
 app.use((req, res) => {
 	return res.status(404).json({
