@@ -9,13 +9,21 @@
           >Add Person</b-button
         >
       </div>
-      <div v-if="peoples.length" class="mt-2">
+      <div v-if="!loading" class="mt-3 mb-2">
+        <b-form-input
+          v-model="searchText"
+          type="text"
+          placeholder="Enter Person's name to Search"
+          @change="handleSearch"
+        ></b-form-input>
+      </div>
+      <div v-if="filteredPeoples.length" class="mt-2">
         <div class="container">
-          <div v-for="people in peoples" :key="people.id">
+          <div v-for="people in filteredPeoples" :key="people.id">
             <b-card class="mt-3" :title="people.name">
               <b-card-text>
                 Name: {{ people.name }} <br />
-                Pan: {{ people.place }} <br />
+                Place: {{ people.place }} <br />
               </b-card-text>
               <b-button variant="success"> Add Bills </b-button>
               <b-button variant="warning"> View Bills </b-button>
@@ -29,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div v-if="!peoples.length">
+      <div v-if="!filteredPeoples.length">
         <div class="text-center">No Peoples Found!</div>
       </div>
     </div>
@@ -84,7 +92,17 @@ export default {
       name: '',
       place: '',
     },
+    searchText: '',
   }),
+  computed: {
+    filteredPeoples() {
+      if (!this.searchText) return this.peoples
+      const persons = this.peoples.filter((people) => {
+        return people.name.toLowerCase().includes(this.searchText.toLowerCase())
+      })
+      return persons.length ? persons : []
+    },
+  },
   async created() {
     await this.getPeoples()
   },
