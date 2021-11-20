@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-	const People = sequelize.define(
-		"Peoples",
+	const Grain = sequelize.define(
+		"Grain",
 		{
 			id: {
 				type: DataTypes.UUID,
@@ -11,12 +11,8 @@ module.exports = (sequelize, DataTypes) => {
 			name: {
 				type: DataTypes.STRING,
 				allowNull: false,
-			},
-			place: {
-				type: DataTypes.STRING,
-				allowNull: false,
 			}
 		}
 	);
-	return People
+	return Grain
 }
