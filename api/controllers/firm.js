@@ -9,6 +9,7 @@ exports.getAllFirms = async (req, res) => {
 			firms
 		})
 	} catch (error) {
+		console.log('error is', error);
 		return res.status(500).json({
 			message: 'Error getting all firms',
 			error: true
@@ -83,14 +84,12 @@ exports.removeFirm = async (req, res) => {
 
 exports.updateFirm = async (req, res) => {
 	try {
-		const firmId = req.params
+		const { firmId } = req.params
 		const { name, pan, address } = req.body
 
-		const firm = await Firm.update({
+
+		const firm = await Firm.update({ name, pan, address }, {
 			where: { id: firmId },
-			name,
-			pan,
-			address
 		})
 
 		return res.status(200).json({
@@ -99,6 +98,7 @@ exports.updateFirm = async (req, res) => {
 			firm
 		})
 	} catch (error) {
+		console.log('error is ', error);
 		return res.status(500).json({
 			error: true,
 			message: 'Error updating firm'

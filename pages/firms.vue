@@ -21,7 +21,9 @@
               <b-button variant="primary" @click="handleModalOpen(firm.id)">
                 Edit
               </b-button>
-              <b-button variant="danger"> Delete </b-button>
+              <b-button variant="danger" @click="handleRemoveFirm(firm.id)">
+                Delete
+              </b-button>
             </b-card>
           </div>
         </div>
@@ -77,33 +79,72 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data: () => ({
     loading: false,
     firmModal: false,
     isFirmEdit: false,
     firmModalTitle: 'Add Firm',
-    firms: [
-      {
-        id: new Date().getTime(),
-        name: 'Shreeji Canvasing',
-        pan: 'CQUPG!*$$G',
-        address: 'b-18 lalgebinagar',
-      },
-    ],
+    firms: [],
+    selectedFirm: null,
     firmData: {
       name: '',
       pan: '',
       address: '',
     },
   }),
+  async created() {
+    await this.getAllFirms()
+  },
   methods: {
-    handleFirmModalSubmit() {},
+    showToast(msg, variant) {
+      this.$bvToast.toast(msg, {
+        variant,
+      })
+    },
+    async getAllFirms() {
+      try {
+        this.loading = true
+        const { data } = await axios.get('/api/firms')
+        this.firms = data.firms
+      } catch (error) {
+        this.$bvToast.toast('Error loading firms', {
+          variant: 'danger',
+        })
+      } finally {
+        this.loading = false
+      }
+    },
+    async handleFirmModalSubmit() {
+      if (!this.isFirmEdit) {
+        try {
+          const { data } = await axios.post('/api/firm', this.firmData)
+          this.firms = [...this.firms, data.firm]
+          this.handleFirmModalClose()
+        } catch (error) {
+          this.showToast('error adding firm', 'danger')
+        }
+      } else {
+        await axios.put(`/api/firm/${this.selectedFirm.id}`, this.firmData)
+        await this.getAllFirms()
+        this.handleFirmModalClose()
+      }
+    },
+    async handleRemoveFirm(firmId) {
+      try {
+        await axios.delete(`/api/firm/${firmId}`)
+        this.getAllFirms()
+      } catch (error) {
+        this.showToast('Error deleting firm', 'danger')
+      }
+    },
     handleModalOpen(firmId) {
       if (!firmId) {
         return (this.firmModal = true)
       }
       const firmData = this.firms.find((firm) => firm.id === firmId)
+      this.selectedFirm = firmData
       this.firmData = firmData
       this.isFirmEdit = true
       this.firmModalTitle = `Edit ${firmData.name}`
@@ -111,6 +152,7 @@ export default {
     },
 
     handleFirmModalClose() {
+      this.selectedFirm = null
       this.firmData = {
         name: '',
         pan: '',
