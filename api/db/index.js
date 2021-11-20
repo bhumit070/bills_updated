@@ -26,5 +26,6 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.Firm = require('./firm')(sequelize, Sequelize.DataTypes)
+db.People = require('./people')(sequelize, Sequelize.DataTypes)
 
 module.exports = db
