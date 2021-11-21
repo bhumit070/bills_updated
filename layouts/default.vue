@@ -23,3 +23,16 @@
   </div>
 </template>
 
+<script>
+import { FETCH_PEOPLE } from '@/store/peoples/action.types'
+import { FETCH_FIRMS } from '@/store/firms/actions.types'
+import { FETCH_GRAINS } from '@/store/grains/action.types'
+export default {
+  async created() {
+    await this.$store.dispatch(FETCH_PEOPLE)
+    await this.$store.dispatch(FETCH_FIRMS)
+    await this.$store.dispatch(FETCH_GRAINS)
+  },
+}
+</script>
+
