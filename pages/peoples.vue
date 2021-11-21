@@ -14,7 +14,6 @@
           v-model="searchText"
           type="text"
           placeholder="Enter Person's name to Search"
-          @change="handleSearch"
         ></b-form-input>
       </div>
       <div v-if="filteredPeoples.length" class="mt-2">
@@ -25,8 +24,18 @@
                 Name: {{ people.name }} <br />
                 Place: {{ people.place }} <br />
               </b-card-text>
-              <b-button variant="success"> Add Bills </b-button>
-              <b-button variant="warning"> View Bills </b-button>
+              <b-button
+                variant="success"
+                @click="$router.push(`/bills/add/${people.id}`)"
+              >
+                Add Bills
+              </b-button>
+              <b-button
+                variant="warning"
+                @click="$router.push(`/bills/view/${people.id}`)"
+              >
+                View Bills
+              </b-button>
               <b-button variant="primary" @click="handleOpenModal(people.id)">
                 Edit
               </b-button>
