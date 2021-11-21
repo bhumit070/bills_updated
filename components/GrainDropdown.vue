@@ -10,6 +10,13 @@
 
 <script>
 export default {
+  props: {
+    bill: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+  },
   data: () => ({
     selected: null,
   }),
@@ -24,6 +31,11 @@ export default {
         value: grain.id,
       }))
     },
+  },
+  mounted() {
+    if (this.bill.grain_id) {
+      this.selected = this.bill.grain_id
+    }
   },
 }
 </script>

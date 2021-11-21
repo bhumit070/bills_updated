@@ -16,6 +16,13 @@ export default {
   components: {
     ModelSelect,
   },
+  props: {
+    bill: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+  },
   data: () => ({
     selected: '',
   }),
@@ -39,6 +46,11 @@ export default {
       if (!val) return
       this.$emit('update-person', val)
     },
+  },
+  mounted() {
+    if (this.bill.seller_id) {
+      this.selected = this.bill.seller_id
+    }
   },
 }
 </script>

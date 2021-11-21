@@ -18,11 +18,18 @@
               </b-form-group>
 
               <b-form-group label="Enter Party Name:">
-                <PeopleDropDown @update-person="updateSeller($event, index)" />
+                <PeopleDropDown
+                  :index="index"
+                  :bill="bill"
+                  @update-person="updateSeller($event, index)"
+                />
               </b-form-group>
 
               <b-form-group label="Select Grain Type:">
-                <grain-dropdown @grain-changed="updateGrain($event, index)" />
+                <grain-dropdown
+                  :bill="bill"
+                  @grain-changed="updateGrain($event, index)"
+                />
               </b-form-group>
 
               <b-form-group label="Enter Packing:">
@@ -109,8 +116,13 @@ export default {
       return this.$router.push('/')
     }
     this.personId = id
-    const data = this.getEmptyBillData()
-    this.bills = [...this.bills, data]
+    const bills = JSON.parse(localStorage.getItem('bills'))
+    if (bills) {
+      this.bills = bills
+    } else {
+      const data = this.getEmptyBillData()
+      this.bills = [...this.bills, data]
+    }
   },
   methods: {
     handleFirmChange(firmId) {
@@ -120,6 +132,7 @@ export default {
       this.selectedFirm = firmId
     },
     handleAddNewBill() {
+      localStorage.setItem('bills', JSON.stringify(this.bills))
       const emptyData = this.getEmptyBillData()
       this.bills = [...this.bills, emptyData]
     },
