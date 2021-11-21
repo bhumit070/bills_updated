@@ -36,7 +36,7 @@
               >
                 View Bills
               </b-button>
-              <b-button variant="primary" @click="handleOpenModal(people.id)">
+              <b-button variant="primary" @click="handleOpenModal(people)">
                 Edit
               </b-button>
               <b-button variant="danger" @click="removePerson(people.id)">
@@ -50,50 +50,12 @@
         <div class="text-center">No Peoples Found!</div>
       </div>
     </div>
-    <b-modal
-      v-model="peopleModal"
-      :title="peopleModalTitle"
-      no-close-on-esc
-      ok-only
-      ok-title="Cancel"
-      ok-variant="danger"
-      @ok="handlePeopleModalClose"
-      @hidden="handlePeopleModalClose"
-    >
-      <div>
-        <b-form @submit.prevent="handlePeopleModalSubmit">
-          <b-form-group label="Person Name:">
-            <b-form-input
-              v-model="peopleData.name"
-              type="text"
-              placeholder="Enter Person name"
-              required
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group label="Person Place:">
-            <b-form-input
-              v-model="peopleData.place"
-              type="text"
-              placeholder="Enter Person's Place"
-              required
-            ></b-form-input>
-          </b-form-group>
-
-          <b-button type="submit" variant="primary">Submit</b-button>
-        </b-form>
-      </div>
-    </b-modal>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {
-  FETCH_PEOPLE,
-  ADD_PEOPLE,
-  UPDATE_PEOPLE,
-} from '@/store/peoples/action.types'
+import { FETCH_PEOPLE, TOGGLE_PEOPLE_MODAL } from '@/store/peoples/action.types'
 export default {
   data: () => ({
     peoples: [],
@@ -127,29 +89,8 @@ export default {
         variant,
       })
     },
-    handleOpenModal(personId) {
-      if (!personId) {
-        return (this.peopleModal = true)
-      }
-      const person = this.filteredPeoples.find((p) => p.id === personId)
-      this.selectedPerson = person
-      this.isEditPerson = true
-      this.peopleData = {
-        id: person.id,
-        name: person.name,
-        place: person.place,
-      }
-      this.peopleModalTitle = `Edit ${person.name}'s Details`
-      this.peopleModal = true
-    },
-    handlePeopleModalClose() {
-      this.peopleModalTitle = 'Add New Person'
-      this.peopleModal = false
-      this.peopleData = {
-        name: '',
-        place: '',
-      }
-      this.isEditPerson = false
+    handleOpenModal(person) {
+      this.$store.dispatch(TOGGLE_PEOPLE_MODAL, person)
     },
     async getPeoples() {
       try {
@@ -159,24 +100,6 @@ export default {
         this.showToast('unable to fetch people', 'danger')
       } finally {
         this.loading = false
-      }
-    },
-    async handlePeopleModalSubmit() {
-      if (!this.isEditPerson) {
-        try {
-          await this.$store.dispatch(ADD_PEOPLE, this.peopleData)
-          this.handlePeopleModalClose()
-        } catch (error) {
-          this.showToast('unable to add people', 'danger')
-        }
-      } else {
-        try {
-          await this.$store.dispatch(UPDATE_PEOPLE, this.peopleData)
-          await this.getPeoples()
-          this.handlePeopleModalClose()
-        } catch (error) {
-          this.showToast('unable to edit people', 'danger')
-        }
       }
     },
     async removePerson(personId) {

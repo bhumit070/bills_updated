@@ -19,6 +19,7 @@
       </b-collapse>
     </b-navbar>
     <Nuxt class="mt-2" />
+    <people-modal />
   </div>
 </template>
 
