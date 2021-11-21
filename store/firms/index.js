@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const FETCH_FIRMS_ACTION = 'fetchFirms'
 export const ADD_FIRM_ACTION = 'addFirm'
-
+export const GET_FIRM_BY_ID_ACTION = 'getFirmById'
 export const SET_FIRMS_MUTATION = 'setFirms'
 export const ADD_FIRM_MUTATION = 'addNewFirm'
 
@@ -36,6 +36,10 @@ const actions = {
 		} catch (error) {
 			throw new Error('Unable to add data')
 		}
+	},
+	[GET_FIRM_BY_ID_ACTION]({ commit, state }, payload) {
+		const firm = state.firms.find(firm => firm.id === payload)
+		return firm
 	}
 }
 
