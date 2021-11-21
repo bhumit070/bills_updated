@@ -17,6 +17,14 @@
                 ></b-form-input>
               </b-form-group>
 
+              <b-form-group label="Enter Party Name:">
+                <PeopleDropDown @update-person="updateSeller($event, index)" />
+              </b-form-group>
+
+              <b-form-group label="Select Grain Type:">
+                <grain-dropdown @grain-changed="updateGrain($event, index)" />
+              </b-form-group>
+
               <b-form-group label="Enter Packing:">
                 <b-form-input
                   v-model="bills[index].packing"
@@ -61,10 +69,6 @@
                   required
                 ></b-form-input>
               </b-form-group>
-
-              <b-form-group label="Enter Party Name:">
-                <PeopleDropDown @update-person="updateSeller($event, index)" />
-              </b-form-group>
             </b-form>
           </b-card-body>
           <b-card-footer>
@@ -91,7 +95,9 @@
 </template>
 
 <script>
+import GrainDropdown from '~/components/GrainDropdown.vue'
 export default {
+  components: { GrainDropdown },
   data: () => ({
     id: null,
     bills: [],
@@ -137,6 +143,9 @@ export default {
     },
     updateSeller(sellerId, index) {
       this.bills[index].seller_id = sellerId
+    },
+    updateGrain(grainId, index) {
+      this.bills[index].grain_id = grainId
     },
   },
 }
