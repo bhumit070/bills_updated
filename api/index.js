@@ -8,10 +8,12 @@ app.use(express.json())
 const firmRoutes = require('./routes/firm')
 const peopleRoutes = require('./routes/people')
 const billRoutes = require('./routes/bills')
+const grainRoutes = require('./routes/grain')
 
 app.use(firmRoutes)
 app.use(peopleRoutes)
 app.use(billRoutes)
+app.use(grainRoutes)
 
 app.use((req, res) => {
 	return res.status(404).json({
