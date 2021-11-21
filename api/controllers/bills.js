@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const db = require('../db/index')
 const Bill = db.Bills
 
@@ -99,10 +100,13 @@ exports.updateBill = async (req, res) => {
 
 exports.getBillsByBuyerId = async (req, res) => {
 	try {
-		const { buyerId } = req.params
+		const { buyerId, firmId } = req.params
 		const bills = await Bill.findAll({
 			where: {
-				buyer_id: buyerId
+				[Op.and]: {
+					buyer_id: buyerId,
+					firm_id: firmId
+				}
 			},
 			include: [{
 				model: db.People,
