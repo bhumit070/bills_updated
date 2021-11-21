@@ -120,7 +120,12 @@ exports.getBillsByBuyerId = async (req, res) => {
 				model: db.Grain,
 				as: 'grain',
 				attributes: ['id', 'name'],
-			}]
+			}, {
+				model: db.Firm,
+				as: 'firm',
+				attributes: ['id', 'name'],
+			}
+			]
 		})
 		if (!bills) return res.status(404).json({
 			message: 'No bill found with id',

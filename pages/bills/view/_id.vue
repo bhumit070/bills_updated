@@ -3,12 +3,17 @@
     <div v-if="loading" class="text-center mt-5 pt-5">
       <b-spinner variant="primary" />
     </div>
+    <Firms v-show="!loading" @firm-changed="handleFirmChange" />
     <div v-if="!loading && !bills.length" class="text-center mt-5 pt-5">
       <h3>No bills found</h3>
     </div>
-    <div v-if="bills.length">
-      <Firms @firm-changed="handleFirmChange" />
-      <div class="container">bills are here</div>
+    <div v-if="bills.length && !loading">
+      <div class="container">
+        <pre>
+
+        {{ bills }}
+        </pre>
+      </div>
     </div>
   </div>
 </template>
@@ -22,6 +27,13 @@ export default {
     bills: [],
     selectedFirm: null,
   }),
+  watch: {
+    async selectedFirm(newFirm) {
+      if (newFirm) {
+        await this.getBills()
+      }
+    },
+  },
   async created() {
     const { id } = this.$route.params
     if (!id) {
@@ -30,9 +42,11 @@ export default {
     this.personId = id
     await this.getBills()
   },
+
   methods: {
     async getBills() {
       try {
+        this.bills = []
         this.loading = true
         const { data } = await axios.get(
           `/api/bills/${this.personId}/${this.selectedFirm}`
@@ -48,7 +62,6 @@ export default {
         return false
       }
       this.selectedFirm = val
-      this.getBills()
     },
   },
 }
