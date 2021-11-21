@@ -33,5 +33,6 @@ db.Bills = require('./bills')(sequelize, Sequelize.DataTypes)
 db.Bills.belongsTo(db.People, { foreignKey: 'seller_id', as: 'seller' })
 db.Bills.belongsTo(db.People, { foreignKey: 'buyer_id', as: 'buyer' })
 db.Bills.belongsTo(db.Grain, { foreignKey: 'grain_id', as: 'grain' })
+db.Bills.belongsTo(db.Firm, { foreignKey: 'firm_id', as: 'firm' })
 
 module.exports = db
