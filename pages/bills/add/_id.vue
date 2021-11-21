@@ -4,7 +4,7 @@
       <Firms @firm-changed="handleFirmChange" />
     </div>
     <div class="container mt-2">
-      <div v-for="(bill, index) in bills" :key="index">
+      <div v-for="(bill, index) in bills" :key="bill.bill_id">
         <b-card :title="`Bill Number ${index + 1}`" class="mt-2">
           <b-card-body>
             <b-form>
@@ -63,12 +63,13 @@
               </b-form-group>
 
               <b-form-group label="Enter Party Name:">
-                <b-form-input
+                <!-- <b-form-input
                   v-model="bills[index].seller_id"
                   type="text"
                   placeholder="Enter Party name"
                   required
-                ></b-form-input>
+                ></b-form-input> -->
+                <PeopleDropDown @update-person="updateSeller($event, index)" />
               </b-form-group>
             </b-form>
           </b-card-body>
@@ -139,6 +140,9 @@ export default {
     },
     handleRemoveBill(billIndex) {
       this.bills = this.bills.filter((bill) => bill.bill_id !== billIndex)
+    },
+    updateSeller(sellerId, index) {
+      this.bills[index].seller_id = sellerId
     },
   },
 }
