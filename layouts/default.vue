@@ -15,6 +15,9 @@
           <b-nav-item>
             <nuxt-link to="/firms">Firms <b-icon-building /> </nuxt-link>
           </b-nav-item>
+          <b-nav-item>
+            <nuxt-link to="/grains">Grains <b-icon-alarm /> </nuxt-link>
+          </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>

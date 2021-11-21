@@ -27,15 +27,16 @@ const actions = {
 	},
 	async [ADD_GRAIN_ACTION]({ commit }, grain) {
 		try {
-			const { data } = await axios.post('/api/grains', grain)
-			commit(SET_GRAINS_MUTATION, data.grains)
+			const { data } = await axios.post('/api/grain', grain)
+			commit(ADD_GRAIN_MUTATION, data.grain)
 		} catch (error) {
 			throw new Error('error adding grain')
 		}
 	},
-	async [REMOVE_GRAIN_ACTION]({ commit }, grainId) {
+	async [REMOVE_GRAIN_ACTION]({ commit, dispatch }, grainId) {
 		try {
 			await axios.delete(`/api/grains/${grainId}`)
+			await dispatch(FETCH_GRAINS_ACTION)
 		} catch (error) {
 			throw new Error('error removing grain')
 		}
