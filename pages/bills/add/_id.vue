@@ -1,7 +1,10 @@
 <template>
   <div class="mt-2">
-    <div class="container">
-      <Firms @firm-changed="handleFirmChange" />
+    <div class="container d-flex">
+      <b-button class="w-25 mr-3" variant="primary" @click="openAddPeopleModal"
+        >Add People</b-button
+      >
+      <Firms class="w-75" @firm-changed="handleFirmChange" />
     </div>
     <div class="container mt-2">
       <div v-for="(bill, index) in bills" :key="bill.bill_id">
@@ -114,6 +117,7 @@
 <script>
 import axios from 'axios'
 import GrainDropdown from '~/components/GrainDropdown.vue'
+import { TOGGLE_PEOPLE_MODAL } from '@/store/peoples/action.types'
 export default {
   components: { GrainDropdown },
   data: () => ({
@@ -190,6 +194,9 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    openAddPeopleModal() {
+      this.$store.dispatch(TOGGLE_PEOPLE_MODAL, false)
     },
   },
 }
