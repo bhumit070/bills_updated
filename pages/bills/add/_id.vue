@@ -90,10 +90,20 @@
         </b-card>
       </div>
       <div class="mt-4">
-        <b-button block variant="primary" @click="handleAddNewBill">
+        <b-button
+          block
+          variant="primary"
+          :disabled="loading"
+          @click="handleAddNewBill"
+        >
           Add New Bill
         </b-button>
-        <b-button block variant="success" :disabled="!bills.length">
+        <b-button
+          block
+          variant="success"
+          :disabled="!bills.length || loading"
+          @click="submitBills"
+        >
           Submit All Bills
         </b-button>
       </div>
@@ -102,6 +112,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import GrainDropdown from '~/components/GrainDropdown.vue'
 export default {
   components: { GrainDropdown },
@@ -109,6 +120,7 @@ export default {
     id: null,
     bills: [],
     selectedFirm: null,
+    loading: false,
   }),
   mounted() {
     const { id } = this.$route.params
@@ -117,7 +129,7 @@ export default {
     }
     this.personId = id
     const bills = JSON.parse(localStorage.getItem('bills'))
-    if (bills) {
+    if (bills && bills.length) {
       this.bills = bills
     } else {
       const data = this.getEmptyBillData()
@@ -137,17 +149,18 @@ export default {
       this.bills = [...this.bills, emptyData]
     },
     getEmptyBillData() {
+      const previousBill = this.bills[this.bills.length - 1]
       return {
         bill_id: this.bills.length,
-        date: null,
-        packing: null,
-        soda_rate: null,
-        bags: null,
-        dalali_rate: null,
-        amount: null,
-        seller_id: null,
+        date: previousBill && previousBill.date ? previousBill.date : '',
+        packing: 0,
+        soda_rate: 0,
+        bags: 0,
+        dalali_rate: 0,
+        amount: 0,
+        seller_id: (previousBill && previousBill.seller_id) || null,
         buyer_id: this.personId,
-        grain_id: null,
+        grain_id: (previousBill && previousBill.grain_id) || null,
         firm_id: this.selectedFirm,
       }
     },
@@ -159,6 +172,22 @@ export default {
     },
     updateGrain(grainId, index) {
       this.bills[index].grain_id = grainId
+    },
+    async submitBills() {
+      try {
+        this.loading = true
+        const bills = this.bills.map((bill) => {
+          delete bill.bill_id
+          return bill
+        })
+        await axios.post('/api/bills', { bills })
+        localStorage.clear('bills')
+        this.bills = []
+      } catch (error) {
+        alert('failed to add bills')
+      } finally {
+        this.loading = false
+      }
     },
   },
 }
