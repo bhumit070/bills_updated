@@ -175,6 +175,8 @@ export default {
     },
     async submitBills() {
       try {
+        const x = confirm('Are you sure you want to submit all bills?')
+        if (!x) return
         this.loading = true
         const bills = this.bills.map((bill) => {
           delete bill.bill_id

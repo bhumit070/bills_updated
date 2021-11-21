@@ -32,7 +32,7 @@ export default {
       const persons = this.$store.getters['peoples/getPeoples']
       if (persons && persons.length) {
         return persons.map((person) => ({
-          text: person.name,
+          text: `${person.name} \t ${person.place}`,
           value: person.id,
         }))
       } else {
