@@ -89,6 +89,11 @@
 
 <script>
 import axios from 'axios'
+import {
+  FETCH_PEOPLE,
+  ADD_PEOPLE,
+  UPDATE_PEOPLE,
+} from '@/store/peoples/action.types'
 export default {
   data: () => ({
     peoples: [],
@@ -105,8 +110,9 @@ export default {
   }),
   computed: {
     filteredPeoples() {
-      if (!this.searchText) return this.peoples
-      const persons = this.peoples.filter((people) => {
+      const peoples = this.$store.getters['peoples/getPeoples']
+      if (!this.searchText) return peoples
+      const persons = peoples.filter((people) => {
         return people.name.toLowerCase().includes(this.searchText.toLowerCase())
       })
       return persons.length ? persons : []
@@ -125,10 +131,11 @@ export default {
       if (!personId) {
         return (this.peopleModal = true)
       }
-      const person = this.peoples.find((p) => p.id === personId)
+      const person = this.filteredPeoples.find((p) => p.id === personId)
       this.selectedPerson = person
       this.isEditPerson = true
       this.peopleData = {
+        id: person.id,
         name: person.name,
         place: person.place,
       }
@@ -147,8 +154,7 @@ export default {
     async getPeoples() {
       try {
         this.loading = true
-        const { data } = await axios.get('/api/people')
-        this.peoples = data.people
+        await this.$store.dispatch(FETCH_PEOPLE)
       } catch (error) {
         this.showToast('unable to fetch people', 'danger')
       } finally {
@@ -158,18 +164,14 @@ export default {
     async handlePeopleModalSubmit() {
       if (!this.isEditPerson) {
         try {
-          const { data } = await axios.post('/api/people', this.peopleData)
-          this.peoples = [...this.peoples, data.person]
+          await this.$store.dispatch(ADD_PEOPLE, this.peopleData)
           this.handlePeopleModalClose()
         } catch (error) {
           this.showToast('unable to add people', 'danger')
         }
       } else {
         try {
-          await axios.put(
-            `/api/people/${this.selectedPerson.id}`,
-            this.peopleData
-          )
+          await this.$store.dispatch(UPDATE_PEOPLE, this.peopleData)
           await this.getPeoples()
           this.handlePeopleModalClose()
         } catch (error) {
@@ -180,7 +182,7 @@ export default {
     async removePerson(personId) {
       try {
         await axios.delete(`/api/people/${personId}`)
-        this.peoples = this.peoples.filter((p) => p.id !== personId)
+        this.getPeoples()
       } catch (error) {
         this.showToast('unable to delete people', 'danger')
       }
