@@ -80,13 +80,13 @@
 
 <script>
 import axios from 'axios'
+import { ADD_FIRM, FETCH_FIRMS } from '@/store/firms/actions.types'
 export default {
   data: () => ({
     loading: false,
     firmModal: false,
     isFirmEdit: false,
     firmModalTitle: 'Add Firm',
-    firms: [],
     selectedFirm: null,
     firmData: {
       name: '',
@@ -94,6 +94,11 @@ export default {
       address: '',
     },
   }),
+  computed: {
+    firms() {
+      return this.$store.getters['firms/allFirms']
+    },
+  },
   async created() {
     await this.getAllFirms()
   },
@@ -106,8 +111,7 @@ export default {
     async getAllFirms() {
       try {
         this.loading = true
-        const { data } = await axios.get('/api/firms')
-        this.firms = data.firms
+        await this.$store.dispatch(FETCH_FIRMS)
       } catch (error) {
         this.$bvToast.toast('Error loading firms', {
           variant: 'danger',
@@ -119,14 +123,26 @@ export default {
     async handleFirmModalSubmit() {
       if (!this.isFirmEdit) {
         try {
-          const { data } = await axios.post('/api/firm', this.firmData)
-          this.firms = [...this.firms, data.firm]
+          const payload = {
+            isEdit: this.isFirmEdit,
+            data: this.firmData,
+          }
+          this.$store.dispatch(ADD_FIRM, payload)
           this.handleFirmModalClose()
         } catch (error) {
           this.showToast('error adding firm', 'danger')
         }
       } else {
-        await axios.put(`/api/firm/${this.selectedFirm.id}`, this.firmData)
+        const payload = {
+          isEdit: this.isFirmEdit,
+          data: {
+            id: this.firmData.id,
+            name: this.firmData.name,
+            pan: this.firmData.pan,
+            address: this.firmData.address,
+          },
+        }
+        await this.$store.dispatch(ADD_FIRM, payload)
         await this.getAllFirms()
         this.handleFirmModalClose()
       }
@@ -144,8 +160,8 @@ export default {
         return (this.firmModal = true)
       }
       const firmData = this.firms.find((firm) => firm.id === firmId)
-      this.selectedFirm = firmData
-      this.firmData = firmData
+      this.selectedFirm = { ...firmData }
+      this.firmData = { ...firmData }
       this.isFirmEdit = true
       this.firmModalTitle = `Edit ${firmData.name}`
       return (this.firmModal = true)
