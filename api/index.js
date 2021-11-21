@@ -24,8 +24,10 @@ app.use((req, res) => {
 
 // db connection
 db.sequelize.sync().then(() => {
+	// eslint-disable-next-line no-console
 	console.log('db connected')
 }).catch(err => {
+	// eslint-disable-next-line no-console
 	console.log(err)
 	process.exit(1)
 })

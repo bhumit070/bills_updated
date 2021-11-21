@@ -2,11 +2,11 @@ const Sequelize = require('sequelize');
 
 
 const sequelize = new Sequelize(
-	'test_bills',
-	'root',
-	'',
+	process.env.DB_NAME,
+	process.env.DB_USERNAME,
+	process.env.DB_PASSWORD,
 	{
-		dialect: 'mysql',
+		dialect: process.env.DB_DIALECT || 'mysql',
 		pool: {
 			max: 5,
 			min: 0,
@@ -14,7 +14,8 @@ const sequelize = new Sequelize(
 			idle: 10000
 		},
 		logging: (data) => {
-			console.log(data);
+			// eslint-disable-next-line no-console
+			process.env.NODE_ENV === 'development' && console.log(data);
 		},
 	}
 );
