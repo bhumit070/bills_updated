@@ -32,7 +32,8 @@ export default {
   },
   methods: {
     handleChange() {
-      console.log('selected is ', this.selected)
+      if (!this.selected) return
+      this.$emit('firm-changed', this.selected)
     },
   },
 }
