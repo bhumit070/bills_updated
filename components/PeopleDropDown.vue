@@ -1,19 +1,25 @@
 <template>
   <div>
-    <b-form-select
+    <ModelSelect
       v-model="selected"
+      placeholder="Select Party Name"
       :options="peoples"
-      @change="$emit('update-person', selected)"
-    ></b-form-select>
-    <div class="mt-3"></div>
+    />
   </div>
 </template>
 
 <script>
+import 'vue-search-select/dist/VueSearchSelect.css'
+import { ModelSelect } from 'vue-search-select'
+
 export default {
+  components: {
+    ModelSelect,
+  },
   data: () => ({
     selected: '',
   }),
+
   computed: {
     peoples() {
       const persons = this.$store.getters['peoples/getPeoples']
@@ -25,6 +31,13 @@ export default {
       } else {
         return []
       }
+    },
+  },
+
+  watch: {
+    selected(val) {
+      if (!val) return
+      this.$emit('update-person', val)
     },
   },
 }

@@ -94,6 +94,7 @@ export default {
     },
     async getPeoples() {
       try {
+        if (this.filteredPeoples && this.filteredPeoples.length) return
         this.loading = true
         await this.$store.dispatch(FETCH_PEOPLE)
       } catch (error) {

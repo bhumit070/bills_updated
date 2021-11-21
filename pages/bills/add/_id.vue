@@ -63,12 +63,6 @@
               </b-form-group>
 
               <b-form-group label="Enter Party Name:">
-                <!-- <b-form-input
-                  v-model="bills[index].seller_id"
-                  type="text"
-                  placeholder="Enter Party name"
-                  required
-                ></b-form-input> -->
                 <PeopleDropDown @update-person="updateSeller($event, index)" />
               </b-form-group>
             </b-form>
