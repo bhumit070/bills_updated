@@ -9,7 +9,6 @@ exports.getAllFirms = async (req, res) => {
 			firms
 		})
 	} catch (error) {
-		console.log('error is', error);
 		return res.status(500).json({
 			message: 'Error getting all firms',
 			error: true
@@ -19,18 +18,12 @@ exports.getAllFirms = async (req, res) => {
 
 exports.addNewFirm = async (req, res) => {
 	try {
-		const { name, pan, address } = req.body
-		const firm = await Firm.create({
-			name,
-			pan,
-			address
-		})
+		const firm = await Firm.create(req.body)
 		return res.status(201).json({
 			success: true,
 			firm
 		})
 	} catch (error) {
-		console.log('error is ', error);
 		return res.status(500).json({
 			message: 'Error adding firms',
 			error: true

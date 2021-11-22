@@ -27,8 +27,10 @@ export default {
   async created() {
     if (!this.firms || !this.firms.length)
       await this.$store.dispatch(FETCH_FIRMS)
-    this.selected = this.firms[0].value
-    this.$emit('firm-changed', this.firms[0].value)
+    this.selected =
+      (this.firms[0] && this.firms[0].value) ||
+      (this.firms[0] && this.firms[0].id)
+    this.$emit('firm-changed', this.selected)
   },
   methods: {
     handleChange() {

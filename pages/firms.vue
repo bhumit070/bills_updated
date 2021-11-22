@@ -16,7 +16,10 @@
               <b-card-text>
                 Name: {{ firm.name }} <br />
                 Pan: {{ firm.pan }} <br />
-                Address: {{ firm.address }}
+                Address: {{ firm.address }} <br />
+                Bank Name: {{ firm.bank_name }} <br />
+                Bank Account Number: {{ firm.bank_account_number }} <br />
+                Bank IFSC Code: {{ firm.bank_ifsc_code }}
               </b-card-text>
               <b-button variant="primary" @click="handleModalOpen(firm.id)">
                 Edit
@@ -70,6 +73,30 @@
               required
             ></b-form-input>
           </b-form-group>
+          <b-form-group label="Firm Bank Name:">
+            <b-form-input
+              v-model="firmData.bank_name"
+              type="text"
+              placeholder="Enter Firm Bank Name"
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group label="Firm Bank Account Number:">
+            <b-form-input
+              v-model="firmData.bank_account_number"
+              type="text"
+              placeholder="Enter Firm Bank Account Number"
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group label="Firm Bank IFSC Code:">
+            <b-form-input
+              v-model="firmData.bank_ifsc_code"
+              type="text"
+              placeholder="Enter Firm Bank IFSC Code"
+              required
+            ></b-form-input>
+          </b-form-group>
 
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
@@ -92,6 +119,9 @@ export default {
       name: '',
       pan: '',
       address: '',
+      bank_name: '',
+      bank_account_number: '',
+      bank_ifsc_code: '',
     },
   }),
   computed: {
