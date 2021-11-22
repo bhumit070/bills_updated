@@ -146,25 +146,39 @@ export default {
         return
       }
       this.selectedFirm = firmId
+      this.bills = this.bills.map((bill) => {
+        return {
+          ...bill,
+          firm_id: firmId,
+        }
+      })
     },
     handleAddNewBill() {
       localStorage.setItem('bills', JSON.stringify(this.bills))
       const emptyData = this.getEmptyBillData()
       this.bills = [...this.bills, emptyData]
     },
-    getEmptyBillData() {
+    getEmptyBillData(isEmpty) {
       const previousBill = this.bills[this.bills.length - 1]
       return {
         bill_id: this.bills.length,
-        date: previousBill && previousBill.date ? previousBill.date : '',
-        packing: 0,
-        soda_rate: 0,
-        bags: 0,
-        dalali_rate: 0,
-        amount: 0,
-        seller_id: (previousBill && previousBill.seller_id) || null,
+        date: isEmpty
+          ? ''
+          : previousBill && previousBill.date
+          ? previousBill.date
+          : '',
+        packing: '',
+        soda_rate: '',
+        bags: '',
+        dalali_rate: '',
+        amount: '',
+        seller_id: isEmpty
+          ? ''
+          : (previousBill && previousBill.seller_id) || null,
+        grain_id: isEmpty
+          ? ''
+          : (previousBill && previousBill.grain_id) || null,
         buyer_id: this.personId,
-        grain_id: (previousBill && previousBill.grain_id) || null,
         firm_id: this.selectedFirm,
       }
     },
@@ -188,7 +202,8 @@ export default {
         })
         await axios.post('/api/bills', { bills })
         localStorage.clear('bills')
-        this.bills = []
+        const data = this.getEmptyBillData(true)
+        this.bills = [data]
       } catch (error) {
         alert('failed to add bills')
       } finally {

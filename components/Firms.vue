@@ -17,7 +17,6 @@ export default {
       if (!firms || !firms.length) {
         return []
       }
-      this.$emit('firm-changed', firms[0].id)
       return firms.map((firm) => ({
         text: firm.name,
         value: firm.id,
