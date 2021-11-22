@@ -5,13 +5,16 @@
     </div>
     <Firms
       v-show="!loading"
-      class="mt-2 mb-2 w-25 ml-5 pl-5"
+      class="mt-2 mb-2 w-25 ml-5 pl-5 hide-print"
       @firm-changed="handleFirmChange"
     />
+    <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print">
+      Print Bill
+    </b-button>
     <div v-if="!loading && !bills.length" class="text-center mt-5 pt-5">
       <h3>No bills found</h3>
     </div>
-    <div v-if="bills.length && !loading">
+    <div v-if="bills.length && !loading" class="bill-card">
       <b-card>
         <b-card-header>
           <div class="float-right pb-3">
@@ -27,20 +30,35 @@
           <table v-if="firm">
             <tr>
               <td><b>FIRM</b></td>
-              &nbsp;
               <td>{{ firm.name }}</td>
             </tr>
             <tr>
               <td><b>ADDRESS</b></td>
-              &nbsp;
               <td>{{ firm.address }}</td>
             </tr>
             <tr>
               <td><b>PAN</b></td>
-              &nbsp;
               <td>{{ firm.pan }}</td>
             </tr>
+            <tr>
+              <td><b>Bank Account Name</b></td>
+              <td>{{ firm.bank_name }}</td>
+            </tr>
+            <tr>
+              <td><b>Bank Account Number</b></td>
+              <td>{{ firm.bank_account_number }}</td>
+            </tr>
+            <tr>
+              <td><b>Bank Account IFSC Code</b></td>
+              <td>{{ firm.bank_ifsc_code }}</td>
+            </tr>
           </table>
+          <div
+            v-if="bills.length && bills[0].buyer && bills[0].buyer.name"
+            class="text-center"
+          >
+            <h3>{{ bills[0].buyer.name }}</h3>
+          </div>
         </b-card-header>
         <b-card-body>
           <b-table :items="bills" :fields="fields">
@@ -147,3 +165,11 @@ export default {
   },
 }
 </script>
+
+<style>
+@media print {
+  .hide-print {
+    display: none !important;
+  }
+}
+</style>
