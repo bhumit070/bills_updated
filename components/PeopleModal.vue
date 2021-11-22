@@ -7,6 +7,7 @@
       ok-only
       ok-title="Cancel"
       ok-variant="danger"
+      :ok-disabled="loading"
       @ok="handlePeopleModalClose"
       @hidden="handlePeopleModalClose"
     >
@@ -30,7 +31,9 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button :disabled="loading" type="submit" variant="primary"
+            >Submit</b-button
+          >
         </b-form>
       </div>
     </b-modal>
@@ -48,6 +51,7 @@ export default {
   data: () => ({
     peopleModalTitle: 'Add People',
     people: null,
+    loading: false,
   }),
   computed: {
     peopleModal: {
@@ -83,6 +87,7 @@ export default {
     },
     async handlePeopleModalSubmit() {
       try {
+        this.loading = true
         if (this.people.id) {
           await this.$store.dispatch(UPDATE_PEOPLE, this.people)
           this.handlePeopleModalClose()
@@ -93,6 +98,8 @@ export default {
         this.$store.dispatch(FETCH_PEOPLE)
       } catch (error) {
         this.showToast('unable to edit people', 'danger')
+      } finally {
+        this.loading = false
       }
     },
   },

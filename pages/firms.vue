@@ -5,7 +5,11 @@
     </div>
     <div v-if="!loading">
       <div class="w-100">
-        <b-button variant="primary" rounded @click="handleModalOpen(false)"
+        <b-button
+          variant="primary"
+          rounded
+          :disabled="addFirmLoading"
+          @click="handleModalOpen(false)"
           >Add Firm</b-button
         >
       </div>
@@ -21,10 +25,18 @@
                 Bank Account Number: {{ firm.bank_account_number }} <br />
                 Bank IFSC Code: {{ firm.bank_ifsc_code }}
               </b-card-text>
-              <b-button variant="primary" @click="handleModalOpen(firm.id)">
+              <b-button
+                variant="primary"
+                :disabled="addFirmLoading"
+                @click="handleModalOpen(firm.id)"
+              >
                 Edit
               </b-button>
-              <b-button variant="danger" @click="handleRemoveFirm(firm.id)">
+              <b-button
+                variant="danger"
+                :disabled="addFirmLoading"
+                @click="handleRemoveFirm(firm.id)"
+              >
                 Delete
               </b-button>
             </b-card>
@@ -43,6 +55,7 @@
       ok-only
       ok-title="Cancel"
       ok-variant="danger"
+      :ok-disabled="addFirmLoading"
       @ok="handleFirmModalClose"
       @hidden="handleFirmModalClose"
     >
@@ -56,7 +69,6 @@
               required
             ></b-form-input>
           </b-form-group>
-
           <b-form-group label="Firm PAN:">
             <b-form-input
               v-model="firmData.pan"
@@ -98,7 +110,9 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="submit" variant="primary" :disabled="addFirmLoading"
+            >Submit</b-button
+          >
         </b-form>
       </div>
     </b-modal>
@@ -111,6 +125,7 @@ import { ADD_FIRM, FETCH_FIRMS } from '@/store/firms/actions.types'
 export default {
   data: () => ({
     loading: false,
+    addFirmLoading: false,
     firmModal: false,
     isFirmEdit: false,
     firmModalTitle: 'Add Firm',
@@ -153,36 +168,48 @@ export default {
     async handleFirmModalSubmit() {
       if (!this.isFirmEdit) {
         try {
+          this.addFirmLoading = true
           const payload = {
             isEdit: this.isFirmEdit,
             data: this.firmData,
           }
-          this.$store.dispatch(ADD_FIRM, payload)
+          await this.$store.dispatch(ADD_FIRM, payload)
           this.handleFirmModalClose()
         } catch (error) {
           this.showToast('error adding firm', 'danger')
+        } finally {
+          this.addFirmLoading = false
         }
       } else {
-        const payload = {
-          isEdit: this.isFirmEdit,
-          data: {
-            id: this.firmData.id,
-            name: this.firmData.name,
-            pan: this.firmData.pan,
-            address: this.firmData.address,
-          },
+        try {
+          const payload = {
+            isEdit: this.isFirmEdit,
+            data: {
+              id: this.firmData.id,
+              name: this.firmData.name,
+              pan: this.firmData.pan,
+              address: this.firmData.address,
+            },
+          }
+          await this.$store.dispatch(ADD_FIRM, payload)
+          await this.getAllFirms()
+          this.handleFirmModalClose()
+        } catch (error) {
+          this.showToast('error updating firm', 'danger')
+        } finally {
+          this.addFirmLoading = false
         }
-        await this.$store.dispatch(ADD_FIRM, payload)
-        await this.getAllFirms()
-        this.handleFirmModalClose()
       }
     },
     async handleRemoveFirm(firmId) {
       try {
+        this.addFirmLoading = true
         await axios.delete(`/api/firm/${firmId}`)
         this.getAllFirms()
       } catch (error) {
         this.showToast('Error deleting firm', 'danger')
+      } finally {
+        this.addFirmLoading = false
       }
     },
     handleModalOpen(firmId) {

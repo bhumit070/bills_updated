@@ -5,7 +5,11 @@
     </div>
     <div v-if="!loading">
       <div class="w-100">
-        <b-button variant="primary" rounded @click="handleOpenModal(false)"
+        <b-button
+          variant="primary"
+          :disabled="deleteLoading"
+          rounded
+          @click="handleOpenModal(false)"
           >Add Person</b-button
         >
       </div>
@@ -26,20 +30,30 @@
               </b-card-text>
               <b-button
                 variant="success"
+                :disabled="deleteLoading"
                 @click="$router.push(`/bills/add/${people.id}`)"
               >
                 Add Bills
               </b-button>
               <b-button
                 variant="warning"
+                :disabled="deleteLoading"
                 @click="$router.push(`/bills/view/${people.id}`)"
               >
                 View Bills
               </b-button>
-              <b-button variant="primary" @click="handleOpenModal(people)">
+              <b-button
+                :disabled="deleteLoading"
+                variant="primary"
+                @click="handleOpenModal(people)"
+              >
                 Edit
               </b-button>
-              <b-button variant="danger" @click="removePerson(people.id)">
+              <b-button
+                :disabled="deleteLoading"
+                variant="danger"
+                @click="removePerson(people.id)"
+              >
                 Delete
               </b-button>
             </b-card>
@@ -62,6 +76,7 @@ export default {
     loading: false,
     peopleModal: false,
     isEditPerson: false,
+    deleteLoading: false,
     peopleModalTitle: 'Add New Person',
     selectedPerson: null,
     peopleData: {
@@ -92,9 +107,9 @@ export default {
     handleOpenModal(person) {
       this.$store.dispatch(TOGGLE_PEOPLE_MODAL, person)
     },
-    async getPeoples() {
+    async getPeoples(val) {
       try {
-        if (this.filteredPeoples && this.filteredPeoples.length) return
+        if (!val && this.filteredPeoples && this.filteredPeoples.length) return
         this.loading = true
         await this.$store.dispatch(FETCH_PEOPLE)
       } catch (error) {
@@ -105,10 +120,13 @@ export default {
     },
     async removePerson(personId) {
       try {
+        this.deleteLoading = true
         await axios.delete(`/api/people/${personId}`)
-        this.getPeoples()
+        await this.getPeoples(true)
       } catch (error) {
         this.showToast('unable to delete people', 'danger')
+      } finally {
+        this.deleteLoading = false
       }
     },
   },

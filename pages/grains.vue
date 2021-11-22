@@ -2,13 +2,18 @@
   <div class="container mt-3">
     <div v-if="isAdd" class="mb-2">
       <b-input v-model="grainText" placeholder="Add Grain Name" />
-      <b-button variant="primary" class="mt-2" @click="addGrain"
+      <b-button
+        variant="primary"
+        class="mt-2"
+        :disabled="loading"
+        @click="addGrain"
         >Add Grain</b-button
       >
     </div>
     <div class="w-100">
       <b-button
         :variant="isAdd ? 'danger' : 'primary'"
+        :disabled="loading"
         @click="isAdd = !isAdd"
         >{{ !isAdd ? 'Add Grain' : 'Close Add Grain' }}</b-button
       >
@@ -21,6 +26,7 @@
             <b-button
               class="float-right"
               variant="danger"
+              :disabled="loading"
               @click="removeGrain(grain.id)"
             >
               Delete Grain
@@ -41,6 +47,7 @@ export default {
   data: () => ({
     isAdd: false,
     grainText: '',
+    loading: false,
   }),
   computed: {
     grains() {
@@ -50,15 +57,25 @@ export default {
   methods: {
     async addGrain() {
       try {
+        this.loading = true
         await this.$store.dispatch(ADD_GRAIN, { name: this.grainText })
         this.isAdd = false
         this.grainText = ''
       } catch (error) {
         alert('unable to add grain')
+      } finally {
+        this.loading = false
       }
     },
     async removeGrain(id) {
-      await this.$store.dispatch(REMOVE_GRAIN, id)
+      try {
+        this.loading = true
+        await this.$store.dispatch(REMOVE_GRAIN, id)
+      } catch (error) {
+        alert('unable to remove grain')
+      } finally {
+        this.loading = false
+      }
     },
   },
 }

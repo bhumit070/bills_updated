@@ -54,13 +54,15 @@
             </tr>
           </table>
           <div
-            v-if="bills.length && bills[0].buyer && bills[0].buyer.name"
+            v-if="
+              bills && bills.length && bills[0].buyer && bills[0].buyer.name
+            "
             class="text-center"
           >
             <h3>{{ bills[0].buyer.name }}</h3>
           </div>
         </b-card-header>
-        <b-card-body>
+        <b-card-body v-if="bills && bills.length">
           <b-table :items="bills" :fields="fields">
             <template #cell(name)="item">
               {{ item.item.seller.name }}
