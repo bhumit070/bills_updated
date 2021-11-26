@@ -18,6 +18,9 @@
           <b-nav-item>
             <nuxt-link to="/grains">Grains <b-icon-alarm /> </nuxt-link>
           </b-nav-item>
+          <b-nav-item>
+            <nuxt-link to="/auth">Logout <b-icon-person /> </nuxt-link>
+          </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
