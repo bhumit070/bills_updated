@@ -32,6 +32,10 @@ import { FETCH_FIRMS } from '@/store/firms/actions.types'
 import { FETCH_GRAINS } from '@/store/grains/action.types'
 export default {
   async created() {
+    const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'))
+    if (!isLoggedIn) {
+      this.$router.push('/auth')
+    }
     await this.$store.dispatch(FETCH_PEOPLE)
     await this.$store.dispatch(FETCH_FIRMS)
     await this.$store.dispatch(FETCH_GRAINS)
