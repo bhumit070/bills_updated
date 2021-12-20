@@ -141,7 +141,7 @@ export default {
         const { data } = await axios.get(
           `/api/bills/${this.personId}/${this.selectedFirm}`
         )
-        this.bills = data.bills
+        this.bills = data.bills.reverse()
       } catch (error) {
       } finally {
         this.loading = false
