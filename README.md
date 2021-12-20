@@ -1,4 +1,11 @@
-# bills
+# Bills
+
+## This website is for billing purposes
+ - Warning:
+   - This is for personal use only
+   - No commercial usage allowed (as per JRL license)
+   - one must not fork / clone this repo without permission
+
 
 ## Build Setup
 

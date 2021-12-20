@@ -125,7 +125,8 @@ exports.getBillsByBuyerId = async (req, res) => {
 				as: 'firm',
 				attributes: ['id', 'name'],
 			}
-			]
+			],
+			order: ['date']
 		})
 		if (!bills) return res.status(404).json({
 			message: 'No bill found with id',
