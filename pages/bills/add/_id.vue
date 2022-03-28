@@ -153,7 +153,57 @@ export default {
         }
       })
     },
+    validateBill(lastBill) {
+      // eslint-disable-next-line
+      const { amount, bags, buyer_id, dalali_rate, date, firm_id, grain_id, packing, seller_id, soda_rate } = lastBill
+      let error = ''
+      if(!amount || !parseFloat(amount)) {
+        error += "Please enter valid amount. \n"
+      }
+      if(!bags || !parseInt(bags)) {
+        error += "Please enter valid bags. \n"
+      }
+      if(!bags || !parseInt(bags)) {
+        error += "Please enter valid bags. \n"
+      }
+      // eslint-disable-next-line
+      if(!buyer_id) {
+        error += "Please enter Buyer. \n"
+      }
+      // eslint-disable-next-line
+      if(!dalali_rate || parseFloat(dalali_rate)) {
+        error += "Please enter dalali rate. \n"
+      }
+      if(!date) {
+        error += "Please enter date. \n"
+      }
+      // eslint-disable-next-line
+      if(!firm_id) {
+        error += "Please enter firm id. \n"
+      }
+      // eslint-disable-next-line
+      if(!grain_id) {
+        error += "Please enter grain id. \n"
+      }
+      if(!packing || !parseFloat(packing)) {
+        error += "Please enter valid packing. \n"
+      }
+      // eslint-disable-next-line
+      if(!seller_id) {
+        error += "Please enter seller id. \n"
+      }
+      // eslint-disable-next-line
+      if(!soda_rate || !parseFloat(soda_rate)) {
+        error += "Please enter valid soda rate. \n"
+      }
+      return error
+    },
     handleAddNewBill() {
+      const lastBill = this.bills.at(-1)
+      const error = this.validateBill(lastBill)
+      if(error) {
+        return alert(error)
+      }
       localStorage.setItem('bills', JSON.stringify(this.bills))
       const emptyData = this.getEmptyBillData()
       this.bills = [...this.bills, emptyData]
@@ -193,6 +243,10 @@ export default {
     },
     async submitBills() {
       try {
+        const error = this.validateBill(this.bills.at(-1))
+        if(error) {
+          return alert(error)
+        }
         const x = confirm('Are you sure you want to submit all bills?')
         if (!x) return
         this.loading = true
