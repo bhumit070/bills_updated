@@ -11,8 +11,15 @@
     <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print">
       Print Bill
     </b-button>
-    <div v-if="!loading && !bills.length" class="text-center mt-5 pt-5">
-      <h3>No bills found</h3>
+    <div v-if="!loading && !bills.length && !selectedFirm" class="text-center mt-5 pt-5">
+      <h3>
+          Select firm to view Bills.
+      </h3>
+    </div>
+    <div v-if="!loading && !bills.length && selectedFirm" class="text-center mt-5 pt-5">
+      <h3>
+          No bills found
+      </h3>
     </div>
     <div v-if="bills.length && !loading" class="bill-card">
       <b-card>
@@ -136,6 +143,7 @@ export default {
   methods: {
     async getBills() {
       try {
+        if(!this.personId || !this.selectedFirm) return
         this.bills = []
         this.loading = true
         const { data } = await axios.get(
