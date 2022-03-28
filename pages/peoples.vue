@@ -56,6 +56,9 @@
               >
                 Delete
               </b-button>
+              <b-button @click="printBill(people.id)">
+                Print Bill
+              </b-button>
             </b-card>
           </div>
         </div>
@@ -99,6 +102,9 @@ export default {
     await this.getPeoples()
   },
   methods: {
+    printBill(id) {
+      window.open(`/bills/view/${id}?print=true`, '_blank')
+    },
     showToast(msg, variant) {
       this.$bvToast.toast(msg, {
         variant,

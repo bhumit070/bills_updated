@@ -8,7 +8,7 @@
       class="mt-2 mb-2 w-25 ml-5 pl-5 hide-print"
       @firm-changed="handleFirmChange"
     />
-    <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print">Print Bill</b-button>
+    <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print" :disabled="!bills.length" @click="printBill">Print Bill</b-button>
     <div v-if="!loading && !bills.length && !selectedFirm" class="text-center mt-5 pt-5">
       <h3>Select firm to view Bills.</h3>
     </div>
@@ -75,6 +75,9 @@
         </b-card-header>
         <b-card-body v-if="bills && bills.length">
           <b-table :items="bills" :fields="fields">
+            <template #cell(number)="item">
+              {{ item.item.number }}
+            </template>
             <template #cell(name)="item">{{ item.item.seller.name }}</template>
             <template #cell(date)="item">{{ getDate(item.item.date) }}</template>
             <template #cell(commodity)="item">{{ item.item.grain.name }}</template>
@@ -114,6 +117,7 @@ export default {
     deleteBillLoading: false,
     date: `${new Date().getFullYear()}-03-31`,
     fields: [
+      'number',
       'date',
       'name',
       'commodity',
@@ -150,6 +154,10 @@ export default {
   },
 
   methods: {
+    printBill() {
+      console.log('print bill called')
+      window.print()
+    },
     async deleteBill(id) {
       this.deleteBillLoading = true
       try {
@@ -172,7 +180,23 @@ export default {
         const { data } = await axios.get(
           `/api/bills/${this.personId}/${this.selectedFirm}`
         )
-        this.bills = data.bills
+        if(data.bills && data.bills.length) {
+          const isPrint = this.$route.query.print
+      
+          data.bills = data.bills.map((bill,index) => {
+            bill.number = index + 1
+            return bill
+          })
+          this.bills = data.bills
+          document.title = this.bills[0].buyer.name
+          if(isPrint) {
+            setTimeout(() => {
+              this.printBill()
+            }, 0);
+          }
+        } else {
+          this.bills = data.bills
+        }
       } catch (error) {
       } finally {
         this.loading = false
@@ -204,5 +228,8 @@ export default {
   .hide-print {
     display: none !important;
   }
+  .table tr td:last-child { display: none !important; }
+  .table tr th:last-child { display: none !important; }
+
 }
 </style>
