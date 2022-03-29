@@ -5,7 +5,7 @@
     </div>
     <Firms
       v-show="!loading"
-      class="mt-2 mb-2 w-25 ml-5 pl-5 hide-print"
+      class="mt-2 mb-2 pl-5 hide-print mr-3"
       @firm-changed="handleFirmChange"
     />
     <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print" :disabled="!bills.length" @click="printBill">Print Bill</b-button>
@@ -16,7 +16,7 @@
       <h3>No bills found</h3>
     </div>
     <div v-if="bills.length && !loading" class="bill-card">
-      <b-card>
+      <b-card class="ml-2 mr-2">
         <b-card-header>
           <div class="float-right pb-3">
             DATE:
@@ -74,7 +74,7 @@
           </div>
         </b-card-header>
         <b-card-body v-if="bills && bills.length">
-          <b-table :items="bills" :fields="fields">
+          <b-table :items="bills" :fields="fields" bordered>
             <template #cell(number)="item">
               {{ item.item.number }}
             </template>
