@@ -171,7 +171,7 @@ export default {
         error += "Please enter Buyer. \n"
       }
       // eslint-disable-next-line
-      if(!dalali_rate || parseFloat(dalali_rate)) {
+      if(!dalali_rate || !parseFloat(dalali_rate)) {
         error += "Please enter dalali rate. \n"
       }
       if(!date) {
