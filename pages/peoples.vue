@@ -22,8 +22,8 @@
       </div>
       <div v-if="filteredPeoples.length" class="mt-2">
         <div class="container">
-          <div v-for="people in filteredPeoples" :key="people.id">
-            <b-card class="mt-3" :title="people.name">
+          <div v-for="(people,index) in filteredPeoples" :key="people.id">
+            <b-card class="mt-3" :title="`${index+1} ${people.name}`">
               <b-card-text>
                 Name: {{ people.name }} <br />
                 Place: {{ people.place }} <br />
