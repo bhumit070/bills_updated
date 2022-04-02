@@ -103,9 +103,10 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/order
+import { GET_FIRM_BY_ID } from '@/store/firms/actions.types'
 import axios from 'axios'
 import moment from 'moment'
-import { GET_FIRM_BY_ID } from '@/store/firms/actions.types'
 export default {
   data: () => ({
     personId: null,
@@ -135,6 +136,16 @@ export default {
         return acc + bill.amount
       }, 0)
     },
+    firms() {
+      const firms = this.$store.getters['firms/allFirms']
+      if (!firms || !firms.length) {
+        return []
+      }
+      return firms.map((firm) => ({
+        text: firm.name,
+        value: firm.id,
+      }))
+    },
   },
   watch: {
     async selectedFirm(newFirm) {
@@ -155,8 +166,16 @@ export default {
 
   methods: {
     printBill() {
-      console.log('print bill called')
+      this.updateDocumentTitle()
       window.print()
+    },
+    updateDocumentTitle() {
+      if(this.bills.length) {
+        const firm = this.firms.find(firm => firm.value === this.selectedFirm)
+        if(firm) {
+          document.title = `${this.bills[0].buyer.name} - ${firm.text}`
+        }
+      }
     },
     async deleteBill(id) {
       this.deleteBillLoading = true
