@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     printBill(id) {
-      window.open(`/bills/view/${id}?print=true`, '_blank')
+      window.open(`/bills/view/${id}`, '_blank')
     },
     showToast(msg, variant) {
       this.$bvToast.toast(msg, {
