@@ -63,6 +63,12 @@
               </td>
               <td>{{ firm.bank_ifsc_code }}</td>
             </tr>
+            <tr>
+              <td>
+                <b>Bill No.</b>
+              </td>
+              <td>{{ getBillNumber() }}</td>
+            </tr>
           </table>
           <div
             v-if="
@@ -72,13 +78,19 @@
           >
             <h3>{{ bills[0].buyer.name }}</h3>
           </div>
+          <div class="text-right">
+            Location: 
+            <b> 
+                {{ bills[0].buyer.place }}
+            </b>
+          </div>
         </b-card-header>
         <b-card-body v-if="bills && bills.length">
           <b-table :items="bills" :fields="fields" bordered>
             <template #cell(number)="item">
               {{ item.item.number }}
             </template>
-            <template #cell(name)="item">{{ item.item.seller.name }}</template>
+            <template #cell(name)="item">{{ item.item.seller && item.item.seller.name }}</template>
             <template #cell(date)="item">{{ getDate(item.item.date) }}</template>
             <template #cell(commodity)="item">{{ item.item.grain.name }}</template>
             <template #cell(action)="item">
@@ -146,6 +158,9 @@ export default {
         value: firm.id,
       }))
     },
+    peoples() {
+      return this.$store.getters['peoples/getPeoples']
+    }
   },
   watch: {
     async selectedFirm(newFirm) {
@@ -165,6 +180,15 @@ export default {
   },
 
   methods: {
+    getBillNumber() {
+      if(this.peoples && this.peoples.length) {
+        const billId = this.bills[0].buyer.id
+        const index = this.peoples.findIndex(person => person.id === billId)
+        return Number(index) + 1
+      } else {
+        return 1
+      }
+    },
     printBill() {
       this.updateDocumentTitle()
       window.print()
