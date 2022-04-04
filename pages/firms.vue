@@ -23,7 +23,8 @@
                 Address: {{ firm.address }} <br />
                 Bank Name: {{ firm.bank_name }} <br />
                 Bank Account Number: {{ firm.bank_account_number }} <br />
-                Bank IFSC Code: {{ firm.bank_ifsc_code }}
+                Bank IFSC Code: {{ firm.bank_ifsc_code }} <br />
+                Phone Number: {{ firm.phone_number }}
               </b-card-text>
               <b-button
                 variant="primary"
@@ -110,6 +111,15 @@
             ></b-form-input>
           </b-form-group>
 
+          <b-form-group label="Firm Phone Number:">
+            <b-form-input
+              v-model="firmData.phone_number"
+              type="text"
+              placeholder="Enter phone number"
+              required
+            ></b-form-input>
+          </b-form-group>
+
           <b-button type="submit" variant="primary" :disabled="addFirmLoading"
             >Submit</b-button
           >
@@ -137,6 +147,7 @@ export default {
       bank_name: '',
       bank_account_number: '',
       bank_ifsc_code: '',
+      phone_number: ''
     },
   }),
   computed: {
@@ -189,6 +200,7 @@ export default {
               name: this.firmData.name,
               pan: this.firmData.pan,
               address: this.firmData.address,
+              phone_number: this.firmData.phone_number
             },
           }
           await this.$store.dispatch(ADD_FIRM, payload)
