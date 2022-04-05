@@ -65,6 +65,12 @@
             </tr>
             <tr>
               <td>
+                <b>Phone Number</b>
+              </td>
+              <td>{{ firm.phone_number }}</td>
+            </tr>
+            <tr>
+              <td>
                 <b>Bill No.</b>
               </td>
               <td>{{ getBillNumber() }}</td>
