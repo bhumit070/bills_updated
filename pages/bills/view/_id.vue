@@ -78,7 +78,7 @@
             <template #cell(number)="item">
               {{ item.item.number }}
             </template>
-            <template #cell(name)="item">{{ item.item.seller.name }}</template>
+            <template #cell(name)="item">{{ item.item.seller ? item.item.seller.name : ''  }}</template>
             <template #cell(date)="item">{{ getDate(item.item.date) }}</template>
             <template #cell(commodity)="item">{{ item.item.grain.name }}</template>
             <template #cell(action)="item">
@@ -217,6 +217,7 @@ export default {
           this.bills = data.bills
         }
       } catch (error) {
+        console.log('error is ', error)
       } finally {
         this.loading = false
       }
