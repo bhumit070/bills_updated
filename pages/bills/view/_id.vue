@@ -3,12 +3,9 @@
     <div v-if="loading" class="text-center mt-5 pt-5">
       <b-spinner variant="primary" />
     </div>
-    <Firms
-      v-show="!loading"
-      class="mt-2 mb-2 pl-5 hide-print mr-3"
-      @firm-changed="handleFirmChange"
-    />
-    <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print" :disabled="!bills.length" @click="printBill">Print Bill</b-button>
+    <Firms v-show="!loading" class="mt-2 mb-2 pl-5 hide-print mr-3" @firm-changed="handleFirmChange" />
+    <b-button variant="primary" class="mt-2 mb-2 ml-5 hide-print" :disabled="!bills.length" @click="printBill">Print
+      Bill</b-button>
     <div v-if="!loading && !bills.length && !selectedFirm" class="text-center mt-5 pt-5">
       <h3>Select firm to view Bills.</h3>
     </div>
@@ -63,14 +60,29 @@
               </td>
               <td>{{ firm.bank_ifsc_code }}</td>
             </tr>
+            <tr>
+              <td>
+                <b>Phone Number</b>
+              </td>
+              <td>{{ firm.phone_number }}</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Bill No.</b>
+              </td>
+              <td>{{ getBillNumber() }}</td>
+            </tr>
           </table>
-          <div
-            v-if="
-              bills && bills.length && bills[0].buyer && bills[0].buyer.name
-            "
-            class="text-center"
-          >
+          <div v-if="
+            bills && bills.length && bills[0].buyer && bills[0].buyer.name
+          " class="text-center">
             <h3>{{ bills[0].buyer.name }}</h3>
+          </div>
+          <div class="text-right">
+            Location:
+            <b>
+              {{ bills[0].buyer.place }}
+            </b>
           </div>
         </b-card-header>
         <b-card-body v-if="bills && bills.length">
@@ -78,15 +90,11 @@
             <template #cell(number)="item">
               {{ item.item.number }}
             </template>
-            <template #cell(name)="item">{{ item.item.seller ? item.item.seller.name : ''  }}</template>
+            <template #cell(name)="item">{{ item.item.seller ? item.item.seller.name : '' }}</template>
             <template #cell(date)="item">{{ getDate(item.item.date) }}</template>
             <template #cell(commodity)="item">{{ item.item.grain.name }}</template>
             <template #cell(action)="item">
-              <b-button
-                variant="danger"
-                :disabled="deleteBillLoading"
-                @click.stop="deleteBill(item.item.id)"
-              >
+              <b-button variant="danger" :disabled="deleteBillLoading" @click.stop="deleteBill(item.item.id)">
                 <b-icon icon="trash-fill" aria-hidden="true"></b-icon>
               </b-button>
             </template>
@@ -146,6 +154,9 @@ export default {
         value: firm.id,
       }))
     },
+    peoples() {
+      return this.$store.getters['peoples/getPeoples']
+    }
   },
   watch: {
     async selectedFirm(newFirm) {
@@ -165,14 +176,23 @@ export default {
   },
 
   methods: {
+    getBillNumber() {
+      if (this.peoples && this.peoples.length) {
+        const billId = this.bills[0].buyer.id
+        const index = this.peoples.findIndex(person => person.id === billId)
+        return Number(index) + 1
+      } else {
+        return 1
+      }
+    },
     printBill() {
       this.updateDocumentTitle()
       window.print()
     },
     updateDocumentTitle() {
-      if(this.bills.length) {
+      if (this.bills.length) {
         const firm = this.firms.find(firm => firm.value === this.selectedFirm)
-        if(firm) {
+        if (firm) {
           document.title = `${this.bills[0].buyer.name} - ${firm.text}`
         }
       }
@@ -199,16 +219,16 @@ export default {
         const { data } = await axios.get(
           `/api/bills/${this.personId}/${this.selectedFirm}`
         )
-        if(data.bills && data.bills.length) {
+        if (data.bills && data.bills.length) {
           const isPrint = this.$route.query.print
-      
-          data.bills = data.bills.map((bill,index) => {
+
+          data.bills = data.bills.map((bill, index) => {
             bill.number = index + 1
             return bill
           })
           this.bills = data.bills
           document.title = this.bills[0].buyer.name
-          if(isPrint) {
+          if (isPrint) {
             setTimeout(() => {
               this.printBill()
             }, 0);
@@ -248,8 +268,14 @@ export default {
   .hide-print {
     display: none !important;
   }
-  .table tr td:last-child { display: none !important; }
-  .table tr th:last-child { display: none !important; }
+
+  .table tr td:last-child {
+    display: none !important;
+  }
+
+  .table tr th:last-child {
+    display: none !important;
+  }
 
 }
 </style>

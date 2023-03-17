@@ -78,10 +78,12 @@ exports.removeFirm = async (req, res) => {
 exports.updateFirm = async (req, res) => {
 	try {
 		const { firmId } = req.params
-		const { name, pan, address } = req.body
+		console.log('request body is ', req.body);
+		// eslint-disable-next-line camelcase
+		const { name, pan, address, phone_number } = req.body
 
 
-		const firm = await Firm.update({ name, pan, address }, {
+		const firm = await Firm.update({ name, pan, address, phone_number }, {
 			where: { id: firmId },
 		})
 
