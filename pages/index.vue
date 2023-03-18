@@ -28,6 +28,9 @@ export default {
   methods: {
     async fetchBillAmount() {
       try {
+        if (!process.browser) {
+          return;
+        }
         this.loading = true
         const response = await axios.get('/api/total-bill-amounts')
         this.billAmount = response.data.totalBillAmount
