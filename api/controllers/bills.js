@@ -145,3 +145,18 @@ exports.getBillsByBuyerId = async (req, res) => {
 		})
 	}
 }
+
+exports.getTotalBillAmount = async (req, res) => {
+	try {
+		const totalBillAmount = await Bill.sum('amount')
+		return res.status(200).json({
+			success: true,
+			totalBillAmount
+		})
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Server error',
+			error: true
+		})
+	}
+}
