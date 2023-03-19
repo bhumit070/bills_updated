@@ -1,9 +1,7 @@
 <template>
   <div>
     <b-navbar toggleable="lg" type="light" variant="light">
-      <b-navbar-brand style="cursor: pointer" @click="$router.push('/')"
-        >Shreeji Billing Software</b-navbar-brand
-      >
+      <b-navbar-brand style="cursor: pointer" @click="$router.push('/')">Shreeji Billing Software</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -26,7 +24,7 @@
     </b-navbar>
     <Nuxt class="mt-2" />
     <people-modal />
-  </div>
+</div>
 </template>
 
 <script>
@@ -35,6 +33,9 @@ import { FETCH_FIRMS } from '@/store/firms/actions.types'
 import { FETCH_GRAINS } from '@/store/grains/action.types'
 export default {
   async created() {
+    if (!process.browser) {
+      return;
+    }
     const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'))
     if (!isLoggedIn) {
       this.$router.push('/auth')

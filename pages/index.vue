@@ -7,7 +7,7 @@
       <h1>Welcome To Billing</h1>
       <h2>Total Amount Of Bills Created <b style="color: green;"> {{ billAmount }} </b> </h2>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
         }
         this.loading = true
         const response = await axios.get('/api/total-bill-amounts')
-        this.billAmount = response.data.totalBillAmount
+        this.billAmount = response.data.totalBillAmount || 0
       } catch (error) {
         this.$bvToast.toast('Error loading total bill amount.', {
           variant: 'danger',
