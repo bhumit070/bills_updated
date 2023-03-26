@@ -5,9 +5,12 @@
     </div>
     <div v-if="!loading" class="text-center">
       <h1>Welcome To Billing</h1>
-      <h2>Total Amount Of Bills Created <b style="color: green;"> {{ billAmount }} </b> </h2>
+      <h2>Total Amount Of Bills Created <b style="color: green;"> {{ new Intl.NumberFormat("en-IN", { style: "currency",
+      currency: "INR" }).format(
+      billAmount,
+      ), }} </b> </h2>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
